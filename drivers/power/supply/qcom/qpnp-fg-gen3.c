@@ -4340,7 +4340,7 @@ static int fg_psy_set_property(struct power_supply *psy,
 		if (rc < 0)
 			pr_err("Error in saving learned_cc_uah, rc=%d\n", rc);
 		break;
-#ifdef BATTERY_LOCK_CAPACITY
+#ifdef CONFIG_BATTERY_LOCK_CAPACITY
 	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
 		chip->cl.nom_cap_uah = pval->intval;
 		break;
@@ -4387,7 +4387,7 @@ static int fg_property_is_writeable(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
 	case POWER_SUPPLY_PROP_CC_STEP:
 	case POWER_SUPPLY_PROP_CC_STEP_SEL:
-#ifdef BATTERY_LOCK_CAPACITY
+#ifdef CONFIG_BATTERY_LOCK_CAPACITY
 	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
 #endif
 	case POWER_SUPPLY_PROP_CHARGE_FULL:
