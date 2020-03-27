@@ -177,5 +177,9 @@ config SMB1390_CHARGE_PUMP
 config BATTERY_LOCK_CAPACITY
 	tristate "battery capacity"
 	help
+	
+config BATTERY_CHARGE_FULL
+	tristate "battery charge full"
+	help
 
 endmenu
