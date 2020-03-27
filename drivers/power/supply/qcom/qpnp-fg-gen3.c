@@ -4204,10 +4204,7 @@ static int fg_psy_get_property(struct power_supply *psy,
 		rc = fg_get_sram_prop(chip, FG_SRAM_OCV, &pval->intval);
 		break;
 	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-		if (-EINVAL != chip->bp.nom_cap_uah)
-			pval->intval = chip->bp.nom_cap_uah * 1000;
-		else
-			pval->intval = chip->cl.nom_cap_uah;
+		pval->intval = chip->cl.nom_cap_uah;
 		break;
 	case POWER_SUPPLY_PROP_RESISTANCE_ID:
 		pval->intval = chip->batt_id_ohms;
@@ -4328,6 +4325,7 @@ static int fg_psy_set_property(struct power_supply *psy,
 		}
 		break;
 	case POWER_SUPPLY_PROP_CHARGE_FULL:
+#ifdef CONFIG_BATTERY_CHARGE_FULL
 		if (chip->cl.active) {
 			pr_warn("Capacity learning active!\n");
 			return 0;
@@ -4336,11 +4334,17 @@ static int fg_psy_set_property(struct power_supply *psy,
 			pr_err("charge_full is out of bounds\n");
 			return -EINVAL;
 		}
+#endif
 		chip->cl.learned_cc_uah = pval->intval;
 		rc = fg_save_learned_cap_to_sram(chip);
 		if (rc < 0)
 			pr_err("Error in saving learned_cc_uah, rc=%d\n", rc);
 		break;
+#ifdef BATTERY_LOCK_CAPACITY
+	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+		chip->cl.nom_cap_uah = pval->intval;
+		break;
+#endif
 	case POWER_SUPPLY_PROP_COLD_TEMP:
 		rc = fg_set_jeita_threshold(chip, JEITA_COLD, pval->intval);
 		if (rc < 0) {
@@ -4383,6 +4387,9 @@ static int fg_property_is_writeable(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
 	case POWER_SUPPLY_PROP_CC_STEP:
 	case POWER_SUPPLY_PROP_CC_STEP_SEL:
+#ifdef BATTERY_LOCK_CAPACITY
+	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+#endif
 	case POWER_SUPPLY_PROP_CHARGE_FULL:
 	case POWER_SUPPLY_PROP_COLD_TEMP:
 	case POWER_SUPPLY_PROP_COOL_TEMP:
