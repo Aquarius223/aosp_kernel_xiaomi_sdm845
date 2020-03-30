@@ -1,4 +1,5 @@
 /* Copyright (c) 2011-2018, The Linux Foundation. All rights reserved.
+/* Copyright (C) 2020 Amktiao
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -335,6 +336,17 @@ enum slim_ch_rate {
 	SLIM_RATE_1HZ,
 	SLIM_RATE_4000HZ,
 	SLIM_RATE_11025HZ,
+	SLIM_RATE_12000HZ,
+	SLIM_RATE_16000HZ,
+	SLIM_RATE_22050HZ,
+	SLIM_RATE_24000HZ,
+	SLIM_RATE_32000HZ,
+	SLIM_RATE_44100HZ,
+	SLIM_RATE_48000HZ,
+	SLIM_RATE_64000HZ,
+	SLIM_RATE_88200HZ,
+	SLIM_RATE_96000HZ,
+	SLIM_RATE_128000HZ,
 };
 
 /*

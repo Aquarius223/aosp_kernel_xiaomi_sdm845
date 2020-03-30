@@ -1,4 +1,5 @@
 /* Copyright (c) 2011-2015, 2017 The Linux Foundation. All rights reserved.
+/* Copyright (C) 2020 Amktiao
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -92,7 +93,7 @@ enum mgr_intr {
 
 enum frm_cfg {
 	FRM_ACTIVE	= 1,
-	CLK_GEAR	= 7,
+	CLK_GEAR	= 10,
 	ROOT_FREQ	= 11,
 	REF_CLK_GEAR	= 15,
 	INTR_WAKE	= 19,
