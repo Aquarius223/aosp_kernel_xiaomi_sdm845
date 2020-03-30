@@ -50,7 +50,7 @@
 		qcom,esd-err-irq-gpio = <&tlmm 52 0x2001>;
 		qcom,mdss-dsi-pan-enable-dynamic-fps;
 		qcom,mdss-dsi-pan-fps-update = "dfps_immediate_porch_mode_vfp";
-		qcom,dsi-supported-dfps-list = <60 55>;
+		qcom,dsi-supported-dfps-list = <62 55>;
 		qcom,dispccbb-enabled;
 		qcom,dispblnotify-enabled;
 		qcom,dispparam-enabled;
@@ -73,7 +73,7 @@
 
 		qcom,mdss-dsi-display-timings {
 			timing@0{
-				qcom,mdss-dsi-panel-framerate = <60>;
+				qcom,mdss-dsi-panel-framerate = <62>;
 				qcom,mdss-dsi-panel-width = <1080>;
 				qcom,mdss-dsi-panel-height = <2160>;
 				qcom,mdss-dsi-h-front-porch = <16>;
