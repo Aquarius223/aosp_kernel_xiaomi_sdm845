@@ -12,9 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- */
-
-/*
+ *
  * Change log:
  *
  * 1.1.0 (01.09.2017)
@@ -37,7 +35,6 @@
 #include <linux/printk.h>
 #include "boeffla_wl_blocker.h"
 
-
 /*****************************************/
 // Variables
 /*****************************************/
@@ -48,7 +45,6 @@ char list_wl_default[LENGTH_LIST_WL_DEFAULT] = {0};
 extern char list_wl_search[LENGTH_LIST_WL_SEARCH];
 extern bool wl_blocker_active;
 extern bool wl_blocker_debug;
-
 
 /*****************************************/
 // internal functions
@@ -66,7 +62,6 @@ static void build_search_string(char *list1, char *list2)
 		wl_blocker_active = false;
 }
 
-
 /*****************************************/
 // sysfs interface functions
 /*****************************************/
@@ -78,7 +73,6 @@ static ssize_t wakelock_blocker_show(struct device *dev, struct device_attribute
 	// return list of wakelocks to be blocked
 	return sprintf(buf, "%s\n", list_wl);
 }
-
 
 // store list of user configured wakelocks
 static ssize_t wakelock_blocker_store(struct device * dev, struct device_attribute *attr,
@@ -97,7 +91,6 @@ static ssize_t wakelock_blocker_store(struct device * dev, struct device_attribu
 	return n;
 }
 
-
 // show list of default, predefined wakelocks
 static ssize_t wakelock_blocker_default_show(struct device *dev, struct device_attribute *attr,
 			    char *buf)
@@ -105,7 +98,6 @@ static ssize_t wakelock_blocker_default_show(struct device *dev, struct device_a
 	// return list of wakelocks to be blocked
 	return sprintf(buf, "%s\n", list_wl_default);
 }
-
 
 // store list of default, predefined wakelocks
 static ssize_t wakelock_blocker_default_store(struct device * dev, struct device_attribute *attr,
@@ -124,7 +116,6 @@ static ssize_t wakelock_blocker_default_store(struct device * dev, struct device
 	return n;
 }
 
-
 // show debug information of driver internals
 static ssize_t debug_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
@@ -132,7 +123,6 @@ static ssize_t debug_show(struct device *dev, struct device_attribute *attr, cha
 	return sprintf(buf, "Debug status: %d\n\nUser list: %s\nDefault list: %s\nSearch list: %s\nActive: %d\n",
 					wl_blocker_debug, list_wl, list_wl_default, list_wl_search, wl_blocker_active);
 }
-
 
 // store debug mode on/off (1/0)
 static ssize_t debug_store(struct device *dev, struct device_attribute *attr,
@@ -155,14 +145,11 @@ static ssize_t debug_store(struct device *dev, struct device_attribute *attr,
 	return count;
 }
 
-
 static ssize_t version_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	// return version information
 	return sprintf(buf, "%s\n", BOEFFLA_WL_BLOCKER_VERSION);
 }
-
-
 
 /*****************************************/
 // Initialize sysfs objects
@@ -194,7 +181,6 @@ static struct miscdevice boeffla_wl_blocker_control_device = {
 	.name = "boeffla_wakelock_blocker",
 };
 
-
 /*****************************************/
 // Driver init and exit functions
 /*****************************************/
@@ -219,7 +205,6 @@ static int boeffla_wl_blocker_init(void)
 	return 0;
 }
 
-
 static void boeffla_wl_blocker_exit(void)
 {
 	// remove boeffla wakelock blocker control device
@@ -229,7 +214,6 @@ static void boeffla_wl_blocker_exit(void)
 	// Print debug info
 	printk("Boeffla WL blocker: driver stopped\n");
 }
-
 
 /* define driver entry points */
 module_init(boeffla_wl_blocker_init);
