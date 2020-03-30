@@ -95,26 +95,7 @@ dtb-$(CONFIG_MACH_XIAOMI_D5X) += \
 	polaris-p3-v2.1.dtb \
 	polaris-mp.dtb \
 	polaris-mp-v2.dtb \
-	polaris-mp-v2.1.dtb \
-	ursa-p0-v2.dtb \
-	ursa-p0-v2.1.dtb \
-	ursa-p1-v2.dtb \
-	ursa-p1-v2.1.dtb \
-	ursa-p2-v2.dtb \
-	ursa-p2-v2.1.dtb \
-	ursa-mp-v2.dtb \
-	ursa-mp-v2.1.dtb \
-	equuleus-p0-v2.dtb \
-	equuleus-p0-v2.1.dtb \
-	equuleus-p1-v2.dtb \
-	equuleus-p1-v2.1.dtb \
-	equuleus-mp-v2.dtb \
-	equuleus-mp-v2.1.dtb
-	beryllium-p0-v2.dtb \
-	beryllium-p0-v2.1.dtb \
-	beryllium-p1-v2.1.dtb \
-	beryllium-p2-v2.1.dtb \
-	beryllium-mp-v2.1.dtb
+	polaris-mp-v2.1.dtb
 
 dtb-$(CONFIG_MACH_XIAOMI_E1N) += \
 	dipper-p0-v2.dtb \
