@@ -295,8 +295,8 @@
 	};
 };
 &pmi8998_charger {
-	qcom,usb-icl-ua = <2800000>;
-	qcom,fcc-max-ua = <3300000>;
+	qcom,usb-icl-ua = <3200000>;
+	qcom,fcc-max-ua = <3800000>;
 	qcom,dc-icl-ua = <950000>;
 	qcom,fcc-low-temp-delta = <2970000>;
 	qcom,fcc-hot-temp-delta = <1650000>;

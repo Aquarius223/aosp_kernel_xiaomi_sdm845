@@ -37,21 +37,21 @@ static struct smb_params v1_params = {
 		.name	= "fast charge current",
 		.reg	= FAST_CHARGE_CURRENT_CFG_REG,
 		.min_u	= 0,
-		.max_u	= 3300000,
+		.max_u	= 4500000,
 		.step_u	= 25000,
 	},
 	.fv			= {
 		.name	= "float voltage",
 		.reg	= FLOAT_VOLTAGE_CFG_REG,
 		.min_u	= 3487500,
-		.max_u	= 4400000,
+		.max_u	= 4900000,
 		.step_u	= 7500,
 	},
 	.usb_icl		= {
 		.name	= "usb input current limit",
 		.reg	= USBIN_CURRENT_LIMIT_CFG_REG,
 		.min_u	= 0,
-		.max_u	= 3000000,
+		.max_u	= 4800000,
 		.step_u	= 25000,
 	},
 	.icl_stat		= {
@@ -123,13 +123,6 @@ static struct smb_params v1_params = {
 		.min_u	= 0,
 		.max_u	= 3000000,
 		.step_u	= 25000,
-	},
-	.jeita_fv_comp		= {
-		.name	= "jeita fv reduction",
-		.reg	= JEITA_FVCOMP_CFG_REG,
-		.min_u	= 0,
-		.max_u	= 472500,
-		.step_u	= 7500,
 	},
 	.freq_buck		= {
 		.name	= "buck switching frequency",
@@ -214,9 +207,6 @@ module_param_named(
 #define MICRO_P1A		100000
 #define OTG_DEFAULT_DEGLITCH_TIME_MS	50
 #define MAX_DCP_ICL_UA  		1800000
-#define DEFAULT_CRITICAL_JEITA_CCOMP 	2975000
-#define JEITA_SOFT_HOT_CC_COMP		1600000
-#define JEITA_SOFT_COOL_CC_COMP		2225000
 #define MIN_WD_BARK_TIME		16
 #define DEFAULT_WD_BARK_TIME		64
 #define BITE_WDOG_TIMEOUT_8S		0x3
@@ -463,24 +453,6 @@ static int smb2_parse_dt(struct smb2 *chip)
 	if (rc < 0)
 		chg->otg_delay_ms = OTG_DEFAULT_DEGLITCH_TIME_MS;
 
-	rc = of_property_read_u32(node, "qcom,fcc-low-temp-delta",
-				&chip->dt.jeita_low_cc_delta);
-	if (rc < 0)
-		chip->dt.jeita_low_cc_delta = DEFAULT_CRITICAL_JEITA_CCOMP;
-	chg->jeita_ccomp_low_delta = chip->dt.jeita_low_cc_delta;
-
-	rc = of_property_read_u32(node, "qcom,fcc-hot-temp-delta",
-				&chip->dt.jeita_hot_cc_delta);
-	if (rc < 0)
-		chip->dt.jeita_hot_cc_delta = JEITA_SOFT_HOT_CC_COMP;
-	chg->jeita_ccomp_hot_delta = chip->dt.jeita_hot_cc_delta;
-
-	rc = of_property_read_u32(node, "qcom,fcc-cool-temp-delta",
-				&chip->dt.jeita_cool_cc_delta);
-	if (rc < 0)
-		chip->dt.jeita_cool_cc_delta = JEITA_SOFT_COOL_CC_COMP;
-	chg->jeita_ccomp_cool_delta = chip->dt.jeita_cool_cc_delta;
-
 	chg->disable_stat_sw_override = of_property_read_bool(node,
 					"qcom,disable-stat-sw-override");
 
@@ -669,6 +641,9 @@ static int smb2_usb_get_prop(struct power_supply *psy,
 		break;
 	case POWER_SUPPLY_PROP_TYPE_RECHECK:
 		rc = smblib_get_prop_type_recheck(chg, val);
+		break;
+	case 144:
+		rc = -EINVAL;
 		break;
 	default:
 		pr_err("get prop %d is not supported in usb\n", psp);
@@ -1935,29 +1910,6 @@ static int smb2_disable_typec(struct smb_charger *chg)
 	return rc;
 }
 
-static int smb2_init_jeita(struct smb2 *chip)
-{
-	struct smb_charger *chg = &chip->chg;
-	int rc;
-/*set cc compensation to 0.3C*/
-	rc = smblib_set_charge_param(chg, &chg->param.jeita_cc_comp, 2225000);
-	if (rc < 0) {
-		pr_err("Couldn't configure jeita_cc rc = %d\n", rc);
-		return rc;
-	}
-	rc = smblib_set_charge_param(chg, &chg->param.jeita_fv_comp, 300000);
-	if (rc < 0) {
-		pr_err("Couldn't configure jeita_cv rc = %d\n", rc);
-		return rc;
-	}
-	rc = smblib_masked_write(chg, JEITA_EN_CFG_REG,
-				JEITA_EN_COLD_SL_FCV_BIT, 0);
-	if (rc < 0)
-		pr_err("Couldn't disable cold_sl_fcv rc=%d\n", rc);
-
-	return 0;
-}
-
 static int smb2_init_hw(struct smb2 *chip)
 {
 	struct smb_charger *chg = &chip->chg;
@@ -1983,8 +1935,6 @@ static int smb2_init_hw(struct smb2 *chip)
 	if (chip->dt.dc_icl_ua < 0)
 		smblib_get_charge_param(chg, &chg->param.dc_icl,
 					&chip->dt.dc_icl_ua);
-
-	smb2_init_jeita(chip);
 
 	if (chip->dt.min_freq_khz > 0) {
 		chg->param.freq_buck.min_u = chip->dt.min_freq_khz;
@@ -2057,15 +2007,6 @@ static int smb2_init_hw(struct smb2 *chip)
 	if (rc < 0) {
 		dev_err(chg->dev,
 			"Couldn't configure QC2.0 to 9V rc=%d\n", rc);
-		return rc;
-	}
-	/* Operate the QC3.0 to limit vbus to 6.6v*/
-	rc = smblib_masked_write(chg, HVDCP_PULSE_COUNT_MAX_REG,
-				 PULSE_COUNT_QC3P0_mask,
-				 0x7);
-	if (rc < 0) {
-		dev_err(chg->dev,
-			"Couldn't configure QC3.0 to 6.6V rc=%d\n", rc);
 		return rc;
 	}
 
