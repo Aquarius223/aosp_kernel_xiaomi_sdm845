@@ -41,7 +41,7 @@
 #include <linux/types.h>
 #include <linux/of_gpio.h>
 #include <linux/platform_device.h>
-#include <linux/input/synaptics_dsx_force.h>
+#include <linux/input/synaptics_dsx.h>
 #include "synaptics_dsx_core.h"
 
 #define SYN_I2C_RETRY_TIMES 4
@@ -168,6 +168,27 @@ static int parse_dt(struct device *dev, struct synaptics_dsx_board_data *bdata)
 			bdata->power_on_state = value;
 	} else
 		bdata->power_gpio = -1;
+
+	retval = of_property_read_u32(np, "synaptics,palm-rx-channel",
+			&value);
+	if (retval < 0)
+		bdata->palm_rx_channel = 0;
+	else
+		bdata->palm_rx_channel = value;
+
+	retval = of_property_read_u32(np, "synaptics,palm-rx-area",
+			&value);
+	if (retval < 0)
+		bdata->palm_rx_area = 0;
+	else
+		bdata->palm_rx_area = value;
+
+	retval = of_property_read_u32(np, "synaptics,palm-tx-disable",
+			&value);
+	if (retval < 0)
+		bdata->palm_tx_disable = 0;
+	else
+		bdata->palm_tx_disable = value;
 
 	retval = of_property_read_u32(np, "synaptics,power-delay-ms",
 			&value);
@@ -698,6 +719,7 @@ static int parse_dt(struct device *dev, struct synaptics_dsx_board_data *bdata)
 		config_info++;
 	};
 
+	dump_dt(dev, bdata);
 	return 0;
 }
 #endif

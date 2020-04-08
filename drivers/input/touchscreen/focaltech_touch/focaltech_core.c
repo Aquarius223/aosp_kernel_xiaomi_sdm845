@@ -377,7 +377,7 @@ static int fts_power_source_init(struct fts_ts_data *data)
 		}
 	}
 
-	data->avdd = regulator_get(&data->client->dev, "avdd");
+		data->avdd = regulator_get(&data->client->dev, "avdd");
 	if (IS_ERR(data->avdd)) {
 		ret = PTR_ERR(data->avdd);
 		FTS_ERROR("get vddio regulator failed,ret=%d", ret);

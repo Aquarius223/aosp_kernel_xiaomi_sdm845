@@ -46,6 +46,15 @@
 #include <linux/power_supply.h>
 #include "cyttsp5_regs.h"
 
+#ifdef CONFIG_WAKE_GESTURES
+#include <linux/wake_gestures.h>
+static bool is_suspended;
+bool scr_suspended(void)
+{
+	return is_suspended;
+}
+#endif
+
 #define CY_GES_WAKEUP
 #define CY_CORE_STARTUP_RETRY_COUNT 3
 

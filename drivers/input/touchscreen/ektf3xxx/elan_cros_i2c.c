@@ -27,6 +27,9 @@
 #include <linux/regulator/consumer.h>
 #include <asm/unaligned.h>
 
+#ifdef CONFIG_WAKE_GESTURES
+#include <linux/wake_gestures.h>
+#endif
 
 /* Device, Driver information */
 #define DEVICE_NAME	"elants_i2c"
