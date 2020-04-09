@@ -28,3 +28,4 @@ obj-$(CONFIG_SOCKEV_NLMCAST) += sockev_nlmcast.o
 obj-$(CONFIG_DST_CACHE) += dst_cache.o
 obj-$(CONFIG_HWBM) += hwbm.o
 obj-$(CONFIG_NET_DEVLINK) += devlink.o
+#obj-$(CONFIG_STIC_WLANTURBO) += turbo.o stic_ipv4.o

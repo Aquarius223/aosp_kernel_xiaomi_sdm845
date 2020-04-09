@@ -1434,6 +1434,8 @@ static void __sk_destruct(struct rcu_head *head)
 		sk_filter_uncharge(sk, filter);
 		RCU_INIT_POINTER(sk->sk_filter, NULL);
 	}
+	if (rcu_access_pointer(sk->sk_reuseport_cb))
+		reuseport_detach_sock(sk);
 
 	sock_disable_timestamp(sk, SK_FLAGS_TIMESTAMP);
 
@@ -2461,6 +2463,7 @@ void sock_init_data(struct socket *sock, struct sock *sk)
 		sk->sk_uid	=	make_kuid(sock_net(sk)->user_ns, 0);
 	}
 
+	sk->pid_num		=	pid_nr_ns(task_tgid(current), &init_pid_ns);
 	rwlock_init(&sk->sk_callback_lock);
 	lockdep_set_class_and_name(&sk->sk_callback_lock,
 			af_callback_keys + sk->sk_family,
